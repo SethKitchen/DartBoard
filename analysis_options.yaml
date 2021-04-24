@@ -1,0 +1,29 @@
+include: package:pedantic/analysis_options.1.8.0.yaml
+
+analyzer:
+  exclude: [build/**]
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    - annotate_overrides
+    - await_only_futures
+    - camel_case_types
+    - cancel_subscriptions
+    - close_sinks
+    - comment_references
+    - constant_identifier_names
+    - control_flow_in_finally
+    - empty_statements
+    - avoid_shadowing_type_parameters
+    - camel_case_extensions
+    - library_names
+    - library_prefixes
+    - non_constant_identifier_names
+    - directives_ordering
+    - curly_braces_in_flow_control_structures
+
+enable-experiment:
+  - extension-methods
