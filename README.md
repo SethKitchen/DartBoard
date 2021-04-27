@@ -33,9 +33,26 @@ contact me seth [at] collaboarator.com
 
 ## Planned/Completed
 
+### Layers
 - Dense Layer
   - Forward Pass (COMPLETED)
   - Backprop (On Deck)
+
+### Activations
+- Sigmoid
+  - Forward Pass (COMPLETED)
+  - Backprop (On Deck)
+- ReLU
+  - Forward Pass (COMPLETED)
+  - Backprop (On Deck)
+- Softmax
+  - Forward Pass (COMPLETED)
+  - Backprop (On Deck)
+ 
+ ### Loss Functions
+ - Categorical Cross Entropy
+    - Forward Pass (COMPLETED)
+    - Backprop (On Deck)
 
 ## Flutter/Dart -- Getting Started
 
