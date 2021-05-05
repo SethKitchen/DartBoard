@@ -39,10 +39,13 @@ library dartboard;
 ////////////////////////////////////////////////////// Imports
 import 'dart:math';
 import 'package:ml_linalg/matrix.dart';
+import 'package:ml_linalg/vector.dart';
 
 ///////////////////////////////////////////////////// Class Decl
 class ActivationSoftmax {
   //////////////////////// Member Vars
+  Matrix? outputs;
+  Matrix? doutputs;
 
   //////////////////////////////// Member Funcs
   Matrix forward(Matrix inputs) {
@@ -62,6 +65,42 @@ class ActivationSoftmax {
       }
       toReturn.add(working);
     }
-    return Matrix.fromList(toReturn);
+    return Matrix?.fromList(toReturn);
+  }
+
+  List<Matrix> backward(Matrix inputs) {
+    List<Iterable<double>> inp = outputs!.toList();
+    List<Matrix> toReturn = [];
+    for (int i = 0; i < inp.length; i++) {
+      List<List<double>> identity = [];
+      List<double> inp2 = inp[i].toList();
+      print('inp2=');
+      print(inp2);
+      for (int j = 0; j < inp2.length; j++) {
+        List<double> identity2 = [];
+        for (int k = 0; k < inp2.length; k++) {
+          if (j == k) {
+            identity2.add(inp2[j]);
+          } else {
+            identity2.add(0);
+          }
+        }
+        identity.add(identity2);
+      }
+      print('identity=');
+      print(identity);
+      Matrix rowVector = Matrix.fromList([inp2]);
+      Matrix columnVector = Matrix.fromColumns([Vector.fromList(inp2)]);
+      Matrix worked = columnVector * rowVector;
+      Matrix jacobian = Matrix.fromList(identity) - worked;
+      print('jacobian=');
+      print(jacobian);
+      Matrix ans =
+          jacobian * Matrix.fromColumns([Vector.fromList(inputs[i].toList())]);
+      print('ans=');
+      print(ans);
+      toReturn.add(ans);
+    }
+    return toReturn;
   }
 }

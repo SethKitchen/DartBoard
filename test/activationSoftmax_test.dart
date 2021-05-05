@@ -1,4 +1,5 @@
 import 'package:dartboard/activations/activationSoftmax.dart';
+import 'package:dartboard/losses/lossCategoricalCrossEntropy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ml_linalg/matrix.dart';
 
@@ -47,6 +48,43 @@ void main() {
         ans,
         Matrix.fromList([
           [0.8952826857566833, 0.024708302691578865, 0.08000901341438293]
+        ]));
+  });
+
+  /*test('test 1-D backward pass', () {
+    final aSig = ActivationSoftmax();
+    final ans = aSig.backward(Matrix.fromList([
+      [0.7, 0.1, 0.2]
+    ]));
+    expect(
+        ans,
+        Matrix.fromList([
+          [-0.1, 0.03333333, 0.06666667]
+        ]));
+  });*/
+
+  test('test cross entropy wth softmax', () {
+    final softmax_outputs = Matrix.fromList([
+      [0.7, 0.1, 0.2],
+      [0.1, 0.5, 0.4],
+      [0.02, 0.9, 0.08]
+    ]);
+    final class_targets = Matrix.fromList([
+      [0, 1, 1]
+    ]);
+    final activation = ActivationSoftmax();
+    activation.outputs = softmax_outputs;
+    final loss = LossCategoricalCrossEntropy();
+    final dinputs = loss.backward(softmax_outputs, class_targets);
+    print('DINPUTS:::::');
+    print(dinputs);
+    final ans = activation.backward(dinputs);
+    expect(
+        ans,
+        Matrix.fromList([
+          [-0.09999999, 0.03333334, 0.06666667],
+          [0.03333334, -0.16666667, 0.13333334],
+          [0.00666667, -0.03333333, 0.02666667]
         ]));
   });
 

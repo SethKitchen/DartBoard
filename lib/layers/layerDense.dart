@@ -44,7 +44,11 @@ class LayerDense {
   //////////////////////// Member Vars
   Random r = Random();
   Matrix? weights;
+  Matrix? dweights;
   Matrix? biases;
+  Matrix? dbiases;
+  Matrix? _inputs;
+  Matrix? dinputs;
   int? batchSize;
 
   //////////////////////// Constructors
@@ -98,7 +102,34 @@ class LayerDense {
 
   //////////////////////////////// Member Funcs
   Matrix forward(Matrix inputs) {
+    _inputs = inputs;
     Matrix toReturn = inputs * weights! + biases!;
+    return toReturn;
+  }
+
+  List<Matrix> backward(Matrix dvalues) {
+    List<Matrix> toReturn = [];
+    assert(_inputs != null);
+    assert(batchSize != null);
+    /////////////////////////////////////////// Weights Derivative
+    dweights = _inputs!.transpose() * dvalues;
+    toReturn.add(dweights!);
+
+    /////////////////////////////////////////// Bias Derivative
+    List<List<double>> workingAllBiases = [];
+    List<double> workingBias = [];
+    dvalues.columns.forEach((element) {
+      workingBias.add(element.sum());
+    });
+    for (int i = 0; i < batchSize!; i++) {
+      workingAllBiases.add(workingBias);
+    }
+    toReturn.add(Matrix.fromList(workingAllBiases));
+
+    ////////////////////////////////////////// Inputs Derivative
+    dinputs = dvalues * weights!.transpose();
+    toReturn.add(dinputs!);
+
     return toReturn;
   }
 }

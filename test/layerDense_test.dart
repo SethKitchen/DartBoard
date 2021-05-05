@@ -12,7 +12,7 @@ import 'package:ml_linalg/matrix.dart';
       A Cross-Platform Deep Learning Framework.
 
 File: layerDense_test.dart
-Description: Tests the dense layer forward pass.
+Description: Tests the dense layer forward/backward pass.
 
 “Commons Clause” License Condition v1.0
 The Software is provided to you by the Licensor under the License, 
@@ -104,5 +104,37 @@ void main() {
     final ans2 = ld2.forward(ans1);
     expect(ans2.columnsNum, 2); // 2 == numNeurons
     expect(ans2.rowsNum, 3); // 3 == batchSize
+  });
+
+  test('test backward pass weights', () {
+    final ld = LayerDense.withInitNeuron(4, 3, 0.5, batchSize: 3);
+    final fp = ld.forward(Matrix.fromList([
+      [1.0, 2.0, 3.0, 2.5],
+      [2.0, 5.0, -1.0, 2.0],
+      [-1.5, 2.7, 3.3, -0.8]
+    ]));
+    final testValues = Matrix.fromList([
+      [1.0, 1.0, 1.0],
+      [2.0, 2.0, 2.0],
+      [3.0, 3.0, 3.0]
+    ]);
+
+    final ans = ld.backward(testValues);
+
+    final ansExpect = [
+      Matrix.fromList([
+        [0.5, 0.5, 0.5],
+        [20.1, 20.1, 20.1],
+        [10.9, 10.9, 10.9],
+        [4.1, 4.1, 4.1]
+      ]),
+      Matrix.fromList([
+        [6, 6, 6],
+        [6, 6, 6],
+        [6, 6, 6]
+      ])
+    ];
+    expect(ans[0], ansExpect[0]);
+    expect(ans[1], ansExpect[1]);
   });
 }

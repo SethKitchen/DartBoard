@@ -44,6 +44,7 @@ import 'package:ml_linalg/matrix.dart';
 ///////////////////////////////////////////////////// Class Decl
 class LossCategoricalCrossEntropy {
   //////////////////////// Member Vars
+  Matrix? dinputs;
 
   //////////////////////////////// Member Funcs
   double forward(Matrix predicted, Matrix actual) {
@@ -60,5 +61,47 @@ class LossCategoricalCrossEntropy {
       }
     }
     return -toReturn;
+  }
+
+  Matrix backward(Matrix dvalues, Matrix y_true) {
+    // Number of samples
+    int samples = dvalues.length;
+    // Number of labels in every sample
+    // We'll use the first sample to count them
+    int labels = dvalues[0].length;
+    // If labels are sparse, turn them into one-hot vector
+    List<Iterable<double>> working = y_true.toList();
+    Matrix? y;
+    if (working[0].length == 1) {
+      List<List<double>> newY = [];
+      for (int i = 0; i < working.length; i++) {
+        int target = working[i].toList()[0].floor();
+        List<double> working2 = [];
+        for (int j = 0; j < labels; j++) {
+          if (target == j) {
+            working2.add(-1);
+          } else {
+            working2.add(0);
+          }
+        }
+        newY.add(working2);
+      }
+      y = Matrix.fromList(newY);
+    } else {
+      List<List<double>> newY = [];
+      for (int i = 0; i < working.length; i++) {
+        List<double> working2 = working[i].toList();
+        for (int j = 0; j < working2.length; j++) {
+          working2[j] = -working2[j];
+        }
+        newY.add(working2);
+      }
+      y = Matrix.fromList(newY);
+    }
+    // Calculate gradient
+    dinputs = y / dvalues;
+    // Normalize gradient
+    dinputs = dinputs! / samples;
+    return dinputs!;
   }
 }

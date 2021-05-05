@@ -38,7 +38,7 @@ You must pay me to use this in a commerical setting --
 contact me seth [at] collaboarator.com
 */
 void main() {
-  test('test calculations', () {
+  test('test forward calculations', () {
     final aReLU = ActivationReLU();
     final ans = aReLU.forward(Matrix.fromList([
       [1.0, 2.0, 3.0, 2.5],
@@ -52,5 +52,25 @@ void main() {
           [2.0, 5.0, 0, 2.0],
           [0, 2.7, 3.3, 0]
         ]));
+  });
+
+  test('test backward pass', () {
+    final aReLU = ActivationReLU();
+    final fp = aReLU.forward(Matrix.fromList([
+      [1.0, 2.0, 3.0, 2.5],
+      [2.0, 5.0, -1.0, 2.0],
+      [-1.5, 2.7, 3.3, -0.8]
+    ]));
+    final ans = aReLU.backward(Matrix.fromList([
+      [1, 1, 1, 1],
+      [2, 2, 2, 2],
+      [3, 3, 3, 3]
+    ]));
+    final ansExpected = Matrix.fromList([
+      [1, 1, 1, 1],
+      [2, 2, 0, 2],
+      [0, 3, 3, 0]
+    ]);
+    expect(ans, ansExpected);
   });
 }

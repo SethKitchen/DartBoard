@@ -58,4 +58,17 @@ class ActivationSigmoid {
     }
     return Matrix.fromList(toReturn);
   }
+
+  Matrix backward(Matrix dvalues) {
+    List<List<double>> toReturn = [];
+    for (int i = 0; i < dvalues.length; i++) {
+      List<double> working = [];
+      List<double> inp2 = dvalues[i].toList();
+      for (int j = 0; j < inp2.length; j++) {
+        working.add(inp2[j] * (1.0 - inp2[j]));
+      }
+      toReturn.add(working);
+    }
+    return Matrix.fromList(toReturn);
+  }
 }

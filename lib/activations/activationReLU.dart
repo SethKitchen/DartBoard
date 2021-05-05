@@ -42,9 +42,11 @@ import 'package:ml_linalg/matrix.dart';
 ///////////////////////////////////////////////////// Class Decl
 class ActivationReLU {
   //////////////////////// Member Vars
+  Matrix? mInputs;
 
   //////////////////////////////// Member Funcs
   Matrix forward(Matrix inputs) {
+    mInputs = inputs;
     List<Iterable<double>> inp = inputs.toList();
     List<List<double>> toReturn = [];
     for (int i = 0; i < inp.length; i++) {
@@ -52,6 +54,24 @@ class ActivationReLU {
       List<double> inp2 = inp[i].toList();
       for (int j = 0; j < inp2.length; j++) {
         working.add(max(0, inp2[j]));
+      }
+      toReturn.add(working);
+    }
+    return Matrix.fromList(toReturn);
+  }
+
+  Matrix backward(Matrix dvalues) {
+    List<Iterable<double>> inp = mInputs!.toList();
+    List<List<double>> toReturn = [];
+    for (int i = 0; i < inp.length; i++) {
+      List<double> working = [];
+      List<double> inp2 = inp[i].toList();
+      for (int j = 0; j < inp2.length; j++) {
+        if (inp2[j] < 0) {
+          working.add(0);
+        } else {
+          working.add(dvalues[i][j]);
+        }
       }
       toReturn.add(working);
     }
